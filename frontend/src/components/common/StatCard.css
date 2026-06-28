@@ -1,0 +1,28 @@
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 150px;
+}
+
+.stat-card h2 {
+  font-size: 34px;
+  margin: 0;
+}
+
+.stat-card h4 {
+  margin: 0;
+}
+
+.stat-card p {
+  color: #64748b;
+  margin: 0;
+}
+
+.icon {
+  font-size: 22px;
+}

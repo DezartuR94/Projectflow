@@ -1,0 +1,56 @@
+.chat-page {
+  padding: 32px;
+  background: #f8fafc;
+  min-height: calc(100vh - 90px);
+}
+
+.chat-box {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.messages {
+  height: 420px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.message {
+  background: #f1f5f9;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.message strong {
+  color: #2563eb;
+}
+
+.message p {
+  margin: 6px 0 0;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 180px 1fr 120px;
+  gap: 12px;
+}
+
+.chat-form input {
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.chat-form button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
