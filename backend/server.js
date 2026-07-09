@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const http = require("http");
-const { Server } = require("socket.io");
 
 const db = require("./database/db");
 
@@ -11,14 +9,6 @@ const tasksRoutes = require("./routes/tasks");
 const messagesRoutes = require("./routes/messages");
 
 const app = express();
-const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
 
 const PORT = 5001;
 
@@ -39,20 +29,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Socket.io
-io.on("connection", (socket) => {
-  console.log("Usuario conectado:", socket.id);
-
-  socket.on("sendMessage", (data) => {
-    io.emit("receiveMessage", data);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Usuario desconectado:", socket.id);
-  });
-});
-
 // Iniciar servidor
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });
