@@ -46,6 +46,9 @@ io.on("connection", (socket) => {
 });
 
 app.post("/notify", (req, res) => {
+  console.log("Notificación recibida:");
+  console.log(req.body);
+
   const { title, message } = req.body;
 
   io.emit("receiveNotification", {

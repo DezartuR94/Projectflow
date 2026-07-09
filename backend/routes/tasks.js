@@ -1,7 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../database/db");
+const axios = require("axios");
 
+const NOTIFICATION_SERVICE_URL =
+  process.env.NOTIFICATION_SERVICE_URL || "http://localhost:5002";
+
+const sendNotification = async (title, message) => {
+  console.log("Enviando notificación:", title, message);
+
+  try {
+    const response = await axios.post(`${NOTIFICATION_SERVICE_URL}/notify`, {
+      title,
+      message,
+    });
+
+    console.log("Respuesta:", response.data);
+  } catch (error) {
+    console.error("Error enviando notificación:");
+    console.error(error.message);
+  }
+};
 // Obtener todas las tareas
 router.get("/", (req, res) => {
   const sql = `
@@ -49,7 +68,7 @@ router.post("/", (req, res) => {
         return res.status(500).json({ error: error.message });
       }
 
-      res.status(201).json({
+      const newTask = {
         id: this.lastID,
         title,
         description,
@@ -57,7 +76,11 @@ router.post("/", (req, res) => {
         status: status || "Pendiente",
         project_id,
         user_id,
-      });
+      };
+
+      sendNotification("Nueva tarea creada", `Se creó la tarea: ${title}`);
+
+      res.status(201).json(newTask);
     },
   );
 });
@@ -99,7 +122,7 @@ router.put("/:id", (req, res) => {
         return res.status(404).json({ error: "Tarea no encontrada." });
       }
 
-      res.json({
+      const updatedTask = {
         id,
         title,
         description,
@@ -107,7 +130,11 @@ router.put("/:id", (req, res) => {
         status,
         project_id,
         user_id,
-      });
+      };
+
+      sendNotification("Tarea actualizada", `Se actualizó la tarea: ${title}`);
+
+      res.json(updatedTask);
     },
   );
 });
@@ -124,6 +151,8 @@ router.delete("/:id", (req, res) => {
     if (this.changes === 0) {
       return res.status(404).json({ error: "Tarea no encontrada." });
     }
+
+    sendNotification("Tarea eliminada", `Se eliminó la tarea con ID: ${id}`);
 
     res.json({ message: "Tarea eliminada correctamente." });
   });
