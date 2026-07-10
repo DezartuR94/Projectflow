@@ -12,6 +12,12 @@ const db = new sqlite3.Database(dbPath, (error) => {
 });
 
 db.serialize(() => {
+  // Configuraciones de rendimiento e integridad
+  db.run("PRAGMA foreign_keys = ON");
+  db.run("PRAGMA journal_mode = WAL");
+  db.run("PRAGMA synchronous = NORMAL");
+  db.run("PRAGMA busy_timeout = 5000");
+
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,6 +62,37 @@ db.serialize(() => {
       message TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
+  `);
+
+  // Índices para acelerar consultas frecuentes
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_tasks_project_id
+    ON tasks(project_id)
+  `);
+
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_tasks_user_id
+    ON tasks(user_id)
+  `);
+
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_tasks_status
+    ON tasks(status)
+  `);
+
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_tasks_created_at
+    ON tasks(created_at)
+  `);
+
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_projects_status
+    ON projects(status)
+  `);
+
+  db.run(`
+    CREATE INDEX IF NOT EXISTS idx_messages_created_at
+    ON messages(created_at)
   `);
 });
 
