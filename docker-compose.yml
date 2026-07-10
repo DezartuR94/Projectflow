@@ -4,13 +4,30 @@ services:
     container_name: projectflow-backend
     ports:
       - "5001:5001"
+    environment:
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5002
     volumes:
       - ./backend/database:/app/database
+    depends_on:
+      - notification-service
+    restart: unless-stopped
+
+  notification-service:
+    build: ./notification-service
+    container_name: projectflow-notification-service
+    ports:
+      - "5002:5002"
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
     container_name: projectflow-frontend
     ports:
       - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5001/api
+      - VITE_SOCKET_URL=http://localhost:5002
     depends_on:
       - backend
+      - notification-service
+    restart: unless-stopped

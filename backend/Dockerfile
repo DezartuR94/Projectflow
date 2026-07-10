@@ -1,10 +1,15 @@
-FROM node:22-alpine
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
 
-RUN npm install
+RUN npm ci
+RUN npm rebuild sqlite3 --build-from-source
 
 COPY . .
 
