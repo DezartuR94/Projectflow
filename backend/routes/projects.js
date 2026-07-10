@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../database/db");
-
+const sendNotification = require("../services/notificationService");
 // Obtener todos los proyectos
 router.get("/", (req, res) => {
   db.all("SELECT * FROM projects ORDER BY id DESC", [], (error, rows) => {
@@ -36,6 +36,11 @@ router.post("/", (req, res) => {
       if (error) {
         return res.status(500).json({ error: error.message });
       }
+      sendNotification(
+        "Nuevo proyecto creado",
+        `Se creó el proyecto: ${name}`,
+        "success",
+      );
 
       res.status(201).json({
         id: this.lastID,
@@ -77,6 +82,11 @@ router.put("/:id", (req, res) => {
       if (this.changes === 0) {
         return res.status(404).json({ error: "Proyecto no encontrado." });
       }
+      sendNotification(
+        "Proyecto actualizado",
+        `Se actualizó el proyecto: ${name}`,
+        "warning",
+      );
 
       res.json({
         id,
@@ -102,6 +112,11 @@ router.delete("/:id", (req, res) => {
     if (this.changes === 0) {
       return res.status(404).json({ error: "Proyecto no encontrado." });
     }
+    sendNotification(
+      "Proyecto eliminado",
+      `Se eliminó el proyecto con ID: ${id}`,
+      "danger",
+    );
 
     res.json({ message: "Proyecto eliminado correctamente." });
   });

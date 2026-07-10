@@ -1,26 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../database/db");
-const axios = require("axios");
-
-const NOTIFICATION_SERVICE_URL =
-  process.env.NOTIFICATION_SERVICE_URL || "http://localhost:5002";
-
-const sendNotification = async (title, message) => {
-  console.log("Enviando notificación:", title, message);
-
-  try {
-    const response = await axios.post(`${NOTIFICATION_SERVICE_URL}/notify`, {
-      title,
-      message,
-    });
-
-    console.log("Respuesta:", response.data);
-  } catch (error) {
-    console.error("Error enviando notificación:");
-    console.error(error.message);
-  }
-};
+const sendNotification = require("../services/notificationService");
 // Obtener todas las tareas
 router.get("/", (req, res) => {
   const sql = `
@@ -78,7 +59,11 @@ router.post("/", (req, res) => {
         user_id,
       };
 
-      sendNotification("Nueva tarea creada", `Se creó la tarea: ${title}`);
+      sendNotification(
+        "Nueva tarea creada",
+        `Se creó la tarea: ${title}`,
+        "success",
+      );
 
       res.status(201).json(newTask);
     },
@@ -132,7 +117,11 @@ router.put("/:id", (req, res) => {
         user_id,
       };
 
-      sendNotification("Tarea actualizada", `Se actualizó la tarea: ${title}`);
+      sendNotification(
+        "Tarea actualizada",
+        `Se actualizó la tarea: ${title}`,
+        "warning",
+      );
 
       res.json(updatedTask);
     },
@@ -152,7 +141,11 @@ router.delete("/:id", (req, res) => {
       return res.status(404).json({ error: "Tarea no encontrada." });
     }
 
-    sendNotification("Tarea eliminada", `Se eliminó la tarea con ID: ${id}`);
+    sendNotification(
+      "Tarea eliminada",
+      `Se eliminó la tarea con ID: ${id}`,
+      "danger",
+    );
 
     res.json({ message: "Tarea eliminada correctamente." });
   });

@@ -46,14 +46,15 @@ io.on("connection", (socket) => {
 });
 
 app.post("/notify", (req, res) => {
-  console.log("Notificación recibida:");
-  console.log(req.body);
+  console.log("Notificación recibida:", req.body);
 
-  const { title, message } = req.body;
+  const { title, message, type } = req.body;
 
   io.emit("receiveNotification", {
     title: title || "ProjectFlow",
     message: message || "Nueva actualización en el sistema",
+    type: type || "info",
+    createdAt: new Date().toISOString(),
   });
 
   res.json({

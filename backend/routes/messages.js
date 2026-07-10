@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../database/db");
+const sendNotification = require("../services/notificationService");
 
 // Obtener mensajes
 router.get("/", (req, res) => {
@@ -33,6 +34,11 @@ router.post("/", (req, res) => {
     if (error) {
       return res.status(500).json({ error: error.message });
     }
+    sendNotification(
+      "Nuevo mensaje en el chat",
+      `${username} envió un nuevo mensaje`,
+      "info",
+    );
 
     res.status(201).json({
       id: this.lastID,

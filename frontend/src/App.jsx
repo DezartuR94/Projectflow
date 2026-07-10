@@ -32,7 +32,9 @@ export default function App() {
   return (
     <div className="app-layout">
       {notification && (
-        <div className="toast-notification">
+        <div
+          className={`toast-notification toast-${notification.type || "info"}`}
+        >
           <strong>{notification.title}</strong>
           <span>{notification.message}</span>
         </div>
